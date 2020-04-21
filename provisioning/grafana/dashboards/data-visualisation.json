@@ -1,0 +1,4227 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 1,
+  "id": 1,
+  "iteration": 1587492396900,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 33,
+      "panels": [],
+      "title": "Recomendations and tips",
+      "type": "row"
+    },
+    {
+      "content": "* Use `Ctrl + o` combination for change tooltip view \n* Click on Row Name, for example `Original data (concentration)` for hide or show all panels incide.\n* You can change date interval by right top button or select it on graph.\n* You can enable/disable show data for metric by `Shift + click` on it name. Try it with `AQI: PM2.5, max` metric\n* AQI detalization interval for `PM2.5` and `PM10` [specified in formula](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf) - 1 day (`1d`). So it recommended, byt you can choose any interval\n* Station location can be found at https://www.saveecobot.com/station/$device_id\n",
+      "datasource": null,
+      "description": "",
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 22,
+      "mode": "markdown",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "datasource": "InfluxDB",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 5,
+      "panels": [],
+      "repeat": "device_id",
+      "scopedVars": {
+        "device_id": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        }
+      },
+      "title": "Station #$device_id: Air Quiality Index",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDB",
+      "description": "If you'd like know how AQI calculated, see https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf",
+      "fill": 3,
+      "fillGradient": 2,
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "hiddenSeries": false,
+      "hideTimeOverride": true,
+      "id": 2,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "maxPerRow": 3,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 1,
+      "points": true,
+      "renderer": "flot",
+      "repeat": "have_aqi",
+      "repeatDirection": "h",
+      "scopedVars": {
+        "device_id": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        },
+        "have_aqi": {
+          "selected": false,
+          "text": "PM10_mcg/m³",
+          "value": "PM10_mcg/m³"
+        }
+      },
+      "seriesOverrides": [
+        {
+          "alias": "/average of/",
+          "color": "rgba(255, 255, 255, 0.8)"
+        },
+        {
+          "alias": "/min of/",
+          "bars": false,
+          "color": "rgba(115, 191, 105, 0.5)",
+          "pointradius": 3,
+          "points": false
+        },
+        {
+          "alias": "/max of/",
+          "bars": false,
+          "color": "rgba(242, 73, 92, 0.5)",
+          "pointradius": 3,
+          "points": false
+        },
+        {
+          "alias": "/percentile/",
+          "bars": false,
+          "color": "#FF9830"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Station #$device_id, AQI: $have_aqi, percentile(95)  of $group_interval",
+          "groupBy": [
+            {
+              "params": [
+                "$group_interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "/^$have_aqi$/",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "aqi"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  95
+                ],
+                "type": "percentile"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "device_id",
+              "operator": "=~",
+              "value": "/^$device_id$/"
+            }
+          ]
+        },
+        {
+          "alias": "Station #$device_id, AQI: $have_aqi, average of $group_interval",
+          "groupBy": [
+            {
+              "params": [
+                "$group_interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "/^$have_aqi$/",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "aqi"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "device_id",
+              "operator": "=~",
+              "value": "/^$device_id$/"
+            }
+          ]
+        },
+        {
+          "alias": "Station #$device_id, AQI: $have_aqi, max of $group_interval",
+          "groupBy": [
+            {
+              "params": [
+                "$group_interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "/^$have_aqi$/",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "aqi"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "max"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "device_id",
+              "operator": "=~",
+              "value": "/^$device_id$/"
+            }
+          ]
+        },
+        {
+          "alias": "Station #$device_id, AQI: $have_aqi, min of $group_interval",
+          "groupBy": [
+            {
+              "params": [
+                "$group_interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "/^$have_aqi$/",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "aqi"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "min"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "device_id",
+              "operator": "=~",
+              "value": "/^$device_id$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(0, 228, 0, 0.2)",
+          "line": false,
+          "lineColor": "rgba(0, 228, 0, 0.6)",
+          "op": "lt",
+          "value": 10,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(0, 228, 0, 0.15)",
+          "line": true,
+          "lineColor": "rgba(115, 191, 105, 0)",
+          "op": "lt",
+          "value": 25,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(0, 228, 0, 0.1)",
+          "line": false,
+          "lineColor": "rgba(255, 255, 0, 0.6)",
+          "op": "lt",
+          "value": 51,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(255, 255, 0, 0.15)",
+          "line": true,
+          "lineColor": "rgba(255, 255, 0, 0.6)",
+          "op": "gt",
+          "value": 51,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(255, 255, 0, 0.22)",
+          "line": false,
+          "lineColor": "rgba(31, 96, 196, 0.6)",
+          "op": "gt",
+          "value": 75,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(255, 126, 0, 0.2)",
+          "line": true,
+          "lineColor": "rgba(255, 126, 0, 0.6)",
+          "op": "gt",
+          "value": 101,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(255, 0, 0, 0.2)",
+          "line": true,
+          "lineColor": "rgba(255, 0, 0, 0.6)",
+          "op": "gt",
+          "value": 151,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(143, 63, 151, 0.2)",
+          "line": true,
+          "lineColor": "rgba(143, 63, 151, 0.6)",
+          "op": "gt",
+          "value": 201,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(126, 0, 35, 0.2)",
+          "line": true,
+          "lineColor": "rgba(126, 0, 35, 0.6)",
+          "op": "gt",
+          "value": 301,
+          "yaxis": "left"
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [
+        {
+          "colorMode": "background6",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time"
+        }
+      ],
+      "timeShift": null,
+      "title": "$have_aqi",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "decimals": null,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "InfluxDB",
+      "description": "If you'd like know how AQI calculated, see https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf",
+      "fill": 3,
+      "fillGradient": 2,
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "hiddenSeries": false,
+      "hideTimeOverride": true,
+      "id": 44,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "maxPerRow": 3,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 1,
+      "points": true,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "h",
+      "repeatIteration": 1587492396900,
+      "repeatPanelId": 2,
+      "scopedVars": {
+        "device_id": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        },
+        "have_aqi": {
+          "selected": false,
+          "text": "PM2.5_mcg/m³",
+          "value": "PM2.5_mcg/m³"
+        }
+      },
+      "seriesOverrides": [
+        {
+          "alias": "/average of/",
+          "color": "rgba(255, 255, 255, 0.8)"
+        },
+        {
+          "alias": "/min of/",
+          "bars": false,
+          "color": "rgba(115, 191, 105, 0.5)",
+          "pointradius": 3,
+          "points": false
+        },
+        {
+          "alias": "/max of/",
+          "bars": false,
+          "color": "rgba(242, 73, 92, 0.5)",
+          "pointradius": 3,
+          "points": false
+        },
+        {
+          "alias": "/percentile/",
+          "bars": false,
+          "color": "#FF9830"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Station #$device_id, AQI: $have_aqi, percentile(95)  of $group_interval",
+          "groupBy": [
+            {
+              "params": [
+                "$group_interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "/^$have_aqi$/",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "aqi"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  95
+                ],
+                "type": "percentile"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "device_id",
+              "operator": "=~",
+              "value": "/^$device_id$/"
+            }
+          ]
+        },
+        {
+          "alias": "Station #$device_id, AQI: $have_aqi, average of $group_interval",
+          "groupBy": [
+            {
+              "params": [
+                "$group_interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "/^$have_aqi$/",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "aqi"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "device_id",
+              "operator": "=~",
+              "value": "/^$device_id$/"
+            }
+          ]
+        },
+        {
+          "alias": "Station #$device_id, AQI: $have_aqi, max of $group_interval",
+          "groupBy": [
+            {
+              "params": [
+                "$group_interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "/^$have_aqi$/",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "aqi"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "max"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "device_id",
+              "operator": "=~",
+              "value": "/^$device_id$/"
+            }
+          ]
+        },
+        {
+          "alias": "Station #$device_id, AQI: $have_aqi, min of $group_interval",
+          "groupBy": [
+            {
+              "params": [
+                "$group_interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "/^$have_aqi$/",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "aqi"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "min"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "device_id",
+              "operator": "=~",
+              "value": "/^$device_id$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(0, 228, 0, 0.2)",
+          "line": false,
+          "lineColor": "rgba(0, 228, 0, 0.6)",
+          "op": "lt",
+          "value": 10,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(0, 228, 0, 0.15)",
+          "line": true,
+          "lineColor": "rgba(115, 191, 105, 0)",
+          "op": "lt",
+          "value": 25,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(0, 228, 0, 0.1)",
+          "line": false,
+          "lineColor": "rgba(255, 255, 0, 0.6)",
+          "op": "lt",
+          "value": 51,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(255, 255, 0, 0.15)",
+          "line": true,
+          "lineColor": "rgba(255, 255, 0, 0.6)",
+          "op": "gt",
+          "value": 51,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(255, 255, 0, 0.22)",
+          "line": false,
+          "lineColor": "rgba(31, 96, 196, 0.6)",
+          "op": "gt",
+          "value": 75,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(255, 126, 0, 0.2)",
+          "line": true,
+          "lineColor": "rgba(255, 126, 0, 0.6)",
+          "op": "gt",
+          "value": 101,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(255, 0, 0, 0.2)",
+          "line": true,
+          "lineColor": "rgba(255, 0, 0, 0.6)",
+          "op": "gt",
+          "value": 151,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(143, 63, 151, 0.2)",
+          "line": true,
+          "lineColor": "rgba(143, 63, 151, 0.6)",
+          "op": "gt",
+          "value": 201,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "custom",
+          "fill": true,
+          "fillColor": "rgba(126, 0, 35, 0.2)",
+          "line": true,
+          "lineColor": "rgba(126, 0, 35, 0.6)",
+          "op": "gt",
+          "value": 301,
+          "yaxis": "left"
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [
+        {
+          "colorMode": "background6",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time"
+        }
+      ],
+      "timeShift": null,
+      "title": "$have_aqi",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": null,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "decimals": null,
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": true,
+      "datasource": "InfluxDB",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 8,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "description": "",
+          "fill": 0,
+          "fillGradient": 2,
+          "gridPos": {
+            "h": 11,
+            "w": 8,
+            "x": 0,
+            "y": 20
+          },
+          "hiddenSeries": false,
+          "id": 10,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "maxPerRow": 3,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "repeat": "pollution_type",
+          "repeatDirection": "h",
+          "scopedVars": {
+            "device_id": {
+              "selected": false,
+              "text": "1",
+              "value": "1"
+            },
+            "pollution_type": {
+              "selected": false,
+              "text": "Atmospheric_pressure_mmHg",
+              "value": "Atmospheric_pressure_mmHg"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "/average of/",
+              "color": "rgba(255, 255, 255, 0.8)"
+            },
+            {
+              "alias": "/min of/",
+              "bars": false,
+              "color": "rgba(115, 191, 105, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/max of/",
+              "bars": false,
+              "color": "rgba(242, 73, 92, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/percentile/",
+              "bars": false,
+              "color": "#FF9830"
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, percentile(95) of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      95
+                    ],
+                    "type": "percentile"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, average of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, max of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, min of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [
+            {
+              "colorMode": "background6",
+              "fill": true,
+              "fillColor": "rgba(234, 112, 112, 0.12)",
+              "line": false,
+              "lineColor": "rgba(237, 46, 24, 0.60)",
+              "op": "time"
+            }
+          ],
+          "timeShift": null,
+          "title": "$pollution_type",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "description": "",
+          "fill": 0,
+          "fillGradient": 2,
+          "gridPos": {
+            "h": 11,
+            "w": 8,
+            "x": 8,
+            "y": 20
+          },
+          "hiddenSeries": false,
+          "id": 35,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "maxPerRow": 3,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "repeat": null,
+          "repeatDirection": "h",
+          "repeatIteration": 1587491591080,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "device_id": {
+              "selected": false,
+              "text": "1",
+              "value": "1"
+            },
+            "pollution_type": {
+              "selected": false,
+              "text": "HECA_relative_humidity_%",
+              "value": "HECA_relative_humidity_%"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "/average of/",
+              "color": "rgba(255, 255, 255, 0.8)"
+            },
+            {
+              "alias": "/min of/",
+              "bars": false,
+              "color": "rgba(115, 191, 105, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/max of/",
+              "bars": false,
+              "color": "rgba(242, 73, 92, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/percentile/",
+              "bars": false,
+              "color": "#FF9830"
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, percentile(95) of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      95
+                    ],
+                    "type": "percentile"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, average of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, max of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, min of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [
+            {
+              "colorMode": "background6",
+              "fill": true,
+              "fillColor": "rgba(234, 112, 112, 0.12)",
+              "line": false,
+              "lineColor": "rgba(237, 46, 24, 0.60)",
+              "op": "time"
+            }
+          ],
+          "timeShift": null,
+          "title": "$pollution_type",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "description": "",
+          "fill": 0,
+          "fillGradient": 2,
+          "gridPos": {
+            "h": 11,
+            "w": 8,
+            "x": 16,
+            "y": 20
+          },
+          "hiddenSeries": false,
+          "id": 36,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "maxPerRow": 3,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "repeat": null,
+          "repeatDirection": "h",
+          "repeatIteration": 1587491591080,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "device_id": {
+              "selected": false,
+              "text": "1",
+              "value": "1"
+            },
+            "pollution_type": {
+              "selected": false,
+              "text": "HECA_temperature_C°",
+              "value": "HECA_temperature_C°"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "/average of/",
+              "color": "rgba(255, 255, 255, 0.8)"
+            },
+            {
+              "alias": "/min of/",
+              "bars": false,
+              "color": "rgba(115, 191, 105, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/max of/",
+              "bars": false,
+              "color": "rgba(242, 73, 92, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/percentile/",
+              "bars": false,
+              "color": "#FF9830"
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, percentile(95) of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      95
+                    ],
+                    "type": "percentile"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, average of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, max of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, min of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [
+            {
+              "colorMode": "background6",
+              "fill": true,
+              "fillColor": "rgba(234, 112, 112, 0.12)",
+              "line": false,
+              "lineColor": "rgba(237, 46, 24, 0.60)",
+              "op": "time"
+            }
+          ],
+          "timeShift": null,
+          "title": "$pollution_type",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "description": "",
+          "fill": 0,
+          "fillGradient": 2,
+          "gridPos": {
+            "h": 11,
+            "w": 8,
+            "x": 0,
+            "y": 31
+          },
+          "hiddenSeries": false,
+          "id": 37,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "maxPerRow": 3,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "repeat": null,
+          "repeatDirection": "h",
+          "repeatIteration": 1587491591080,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "device_id": {
+              "selected": false,
+              "text": "1",
+              "value": "1"
+            },
+            "pollution_type": {
+              "selected": false,
+              "text": "PM10_mcg/m³",
+              "value": "PM10_mcg/m³"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "/average of/",
+              "color": "rgba(255, 255, 255, 0.8)"
+            },
+            {
+              "alias": "/min of/",
+              "bars": false,
+              "color": "rgba(115, 191, 105, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/max of/",
+              "bars": false,
+              "color": "rgba(242, 73, 92, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/percentile/",
+              "bars": false,
+              "color": "#FF9830"
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, percentile(95) of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      95
+                    ],
+                    "type": "percentile"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, average of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, max of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, min of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [
+            {
+              "colorMode": "background6",
+              "fill": true,
+              "fillColor": "rgba(234, 112, 112, 0.12)",
+              "line": false,
+              "lineColor": "rgba(237, 46, 24, 0.60)",
+              "op": "time"
+            }
+          ],
+          "timeShift": null,
+          "title": "$pollution_type",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "description": "",
+          "fill": 0,
+          "fillGradient": 2,
+          "gridPos": {
+            "h": 11,
+            "w": 8,
+            "x": 8,
+            "y": 31
+          },
+          "hiddenSeries": false,
+          "id": 38,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "maxPerRow": 3,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "repeat": null,
+          "repeatDirection": "h",
+          "repeatIteration": 1587491591080,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "device_id": {
+              "selected": false,
+              "text": "1",
+              "value": "1"
+            },
+            "pollution_type": {
+              "selected": false,
+              "text": "PM2.5_mcg/m³",
+              "value": "PM2.5_mcg/m³"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "/average of/",
+              "color": "rgba(255, 255, 255, 0.8)"
+            },
+            {
+              "alias": "/min of/",
+              "bars": false,
+              "color": "rgba(115, 191, 105, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/max of/",
+              "bars": false,
+              "color": "rgba(242, 73, 92, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/percentile/",
+              "bars": false,
+              "color": "#FF9830"
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, percentile(95) of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      95
+                    ],
+                    "type": "percentile"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, average of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, max of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, min of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [
+            {
+              "colorMode": "background6",
+              "fill": true,
+              "fillColor": "rgba(234, 112, 112, 0.12)",
+              "line": false,
+              "lineColor": "rgba(237, 46, 24, 0.60)",
+              "op": "time"
+            }
+          ],
+          "timeShift": null,
+          "title": "$pollution_type",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "description": "",
+          "fill": 0,
+          "fillGradient": 2,
+          "gridPos": {
+            "h": 11,
+            "w": 8,
+            "x": 16,
+            "y": 31
+          },
+          "hiddenSeries": false,
+          "id": 39,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "maxPerRow": 3,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "repeat": null,
+          "repeatDirection": "h",
+          "repeatIteration": 1587491591080,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "device_id": {
+              "selected": false,
+              "text": "1",
+              "value": "1"
+            },
+            "pollution_type": {
+              "selected": false,
+              "text": "Relative_humidity_%",
+              "value": "Relative_humidity_%"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "/average of/",
+              "color": "rgba(255, 255, 255, 0.8)"
+            },
+            {
+              "alias": "/min of/",
+              "bars": false,
+              "color": "rgba(115, 191, 105, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/max of/",
+              "bars": false,
+              "color": "rgba(242, 73, 92, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/percentile/",
+              "bars": false,
+              "color": "#FF9830"
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, percentile(95) of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      95
+                    ],
+                    "type": "percentile"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, average of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, max of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, min of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [
+            {
+              "colorMode": "background6",
+              "fill": true,
+              "fillColor": "rgba(234, 112, 112, 0.12)",
+              "line": false,
+              "lineColor": "rgba(237, 46, 24, 0.60)",
+              "op": "time"
+            }
+          ],
+          "timeShift": null,
+          "title": "$pollution_type",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "description": "",
+          "fill": 0,
+          "fillGradient": 2,
+          "gridPos": {
+            "h": 11,
+            "w": 8,
+            "x": 0,
+            "y": 42
+          },
+          "hiddenSeries": false,
+          "id": 40,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "maxPerRow": 3,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "repeat": null,
+          "repeatDirection": "h",
+          "repeatIteration": 1587491591080,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "device_id": {
+              "selected": false,
+              "text": "1",
+              "value": "1"
+            },
+            "pollution_type": {
+              "selected": false,
+              "text": "Temperature_C°",
+              "value": "Temperature_C°"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "/average of/",
+              "color": "rgba(255, 255, 255, 0.8)"
+            },
+            {
+              "alias": "/min of/",
+              "bars": false,
+              "color": "rgba(115, 191, 105, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/max of/",
+              "bars": false,
+              "color": "rgba(242, 73, 92, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/percentile/",
+              "bars": false,
+              "color": "#FF9830"
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, percentile(95) of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      95
+                    ],
+                    "type": "percentile"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, average of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, max of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, min of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [
+            {
+              "colorMode": "background6",
+              "fill": true,
+              "fillColor": "rgba(234, 112, 112, 0.12)",
+              "line": false,
+              "lineColor": "rgba(237, 46, 24, 0.60)",
+              "op": "time"
+            }
+          ],
+          "timeShift": null,
+          "title": "$pollution_type",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "description": "",
+          "fill": 0,
+          "fillGradient": 2,
+          "gridPos": {
+            "h": 11,
+            "w": 8,
+            "x": 8,
+            "y": 42
+          },
+          "hiddenSeries": false,
+          "id": 41,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "maxPerRow": 3,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "repeat": null,
+          "repeatDirection": "h",
+          "repeatIteration": 1587491591080,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "device_id": {
+              "selected": false,
+              "text": "1",
+              "value": "1"
+            },
+            "pollution_type": {
+              "selected": false,
+              "text": "Wi-Fi_signal_dBm",
+              "value": "Wi-Fi_signal_dBm"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "/average of/",
+              "color": "rgba(255, 255, 255, 0.8)"
+            },
+            {
+              "alias": "/min of/",
+              "bars": false,
+              "color": "rgba(115, 191, 105, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/max of/",
+              "bars": false,
+              "color": "rgba(242, 73, 92, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/percentile/",
+              "bars": false,
+              "color": "#FF9830"
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, percentile(95) of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      95
+                    ],
+                    "type": "percentile"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, average of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, max of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, min of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [
+            {
+              "colorMode": "background6",
+              "fill": true,
+              "fillColor": "rgba(234, 112, 112, 0.12)",
+              "line": false,
+              "lineColor": "rgba(237, 46, 24, 0.60)",
+              "op": "time"
+            }
+          ],
+          "timeShift": null,
+          "title": "$pollution_type",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "description": "",
+          "fill": 0,
+          "fillGradient": 2,
+          "gridPos": {
+            "h": 11,
+            "w": 8,
+            "x": 16,
+            "y": 42
+          },
+          "hiddenSeries": false,
+          "id": 42,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "maxPerRow": 3,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "repeat": null,
+          "repeatDirection": "h",
+          "repeatIteration": 1587491591080,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "device_id": {
+              "selected": false,
+              "text": "1",
+              "value": "1"
+            },
+            "pollution_type": {
+              "selected": false,
+              "text": "max_micro",
+              "value": "max_micro"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "/average of/",
+              "color": "rgba(255, 255, 255, 0.8)"
+            },
+            {
+              "alias": "/min of/",
+              "bars": false,
+              "color": "rgba(115, 191, 105, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/max of/",
+              "bars": false,
+              "color": "rgba(242, 73, 92, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/percentile/",
+              "bars": false,
+              "color": "#FF9830"
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, percentile(95) of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      95
+                    ],
+                    "type": "percentile"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, average of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, max of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, min of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [
+            {
+              "colorMode": "background6",
+              "fill": true,
+              "fillColor": "rgba(234, 112, 112, 0.12)",
+              "line": false,
+              "lineColor": "rgba(237, 46, 24, 0.60)",
+              "op": "time"
+            }
+          ],
+          "timeShift": null,
+          "title": "$pollution_type",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "InfluxDB",
+          "description": "",
+          "fill": 0,
+          "fillGradient": 2,
+          "gridPos": {
+            "h": 11,
+            "w": 8,
+            "x": 0,
+            "y": 53
+          },
+          "hiddenSeries": false,
+          "id": 43,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": true,
+            "hideEmpty": false,
+            "hideZero": false,
+            "max": true,
+            "min": true,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "maxPerRow": 3,
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "repeat": null,
+          "repeatDirection": "h",
+          "repeatIteration": 1587491591080,
+          "repeatPanelId": 10,
+          "scopedVars": {
+            "device_id": {
+              "selected": false,
+              "text": "1",
+              "value": "1"
+            },
+            "pollution_type": {
+              "selected": false,
+              "text": "min_micro",
+              "value": "min_micro"
+            }
+          },
+          "seriesOverrides": [
+            {
+              "alias": "/average of/",
+              "color": "rgba(255, 255, 255, 0.8)"
+            },
+            {
+              "alias": "/min of/",
+              "bars": false,
+              "color": "rgba(115, 191, 105, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/max of/",
+              "bars": false,
+              "color": "rgba(242, 73, 92, 0.5)",
+              "pointradius": 3,
+              "points": false
+            },
+            {
+              "alias": "/percentile/",
+              "bars": false,
+              "color": "#FF9830"
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, percentile(95) of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [
+                      95
+                    ],
+                    "type": "percentile"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, average of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, max of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "C",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "max"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            },
+            {
+              "alias": "Station #$device_id, original data: $pollution_type, min of $group_interval",
+              "groupBy": [
+                {
+                  "params": [
+                    "$group_interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "$pollution_type",
+              "orderByTime": "ASC",
+              "policy": "default",
+              "refId": "D",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "concentration"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "min"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "device_id",
+                  "operator": "=~",
+                  "value": "/^$device_id$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [
+            {
+              "colorMode": "background6",
+              "fill": true,
+              "fillColor": "rgba(234, 112, 112, 0.12)",
+              "line": false,
+              "lineColor": "rgba(237, 46, 24, 0.60)",
+              "op": "time"
+            }
+          ],
+          "timeShift": null,
+          "title": "$pollution_type",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "transparent": true,
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "decimals": null,
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "repeat": "device_id",
+      "scopedVars": {
+        "device_id": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        }
+      },
+      "title": "Station #$device_id: Original data (concentartion)",
+      "type": "row"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 22,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": "InfluxDB",
+        "definition": "SHOW SERIES",
+        "hide": 0,
+        "includeAll": true,
+        "index": -1,
+        "label": "Sensors",
+        "multi": true,
+        "name": "pollution_type",
+        "options": [],
+        "query": "SHOW SERIES",
+        "refresh": 1,
+        "regex": "/(.+?)(?:,.*)/",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": "InfluxDB",
+        "definition": "SHOW SERIES",
+        "hide": 2,
+        "includeAll": true,
+        "index": -1,
+        "label": null,
+        "multi": true,
+        "name": "have_aqi",
+        "options": [],
+        "query": "SHOW SERIES",
+        "refresh": 1,
+        "regex": "/(.*)(?:,.+?)(?:,have_aqi=true)/",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "auto": true,
+        "auto_count": 500,
+        "auto_min": "1s",
+        "current": {
+          "selected": false,
+          "text": "1d",
+          "value": "1d"
+        },
+        "hide": 0,
+        "label": "Detalization",
+        "name": "group_interval",
+        "options": [
+          {
+            "selected": false,
+            "text": "auto",
+            "value": "$__auto_interval_group_interval"
+          },
+          {
+            "selected": false,
+            "text": "1s",
+            "value": "1s"
+          },
+          {
+            "selected": false,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "8h",
+            "value": "8h"
+          },
+          {
+            "selected": true,
+            "text": "1d",
+            "value": "1d"
+          },
+          {
+            "selected": false,
+            "text": "1w",
+            "value": "1w"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          }
+        ],
+        "query": "1s,10m,1h,8h,1d,1w,1m",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "InfluxDB",
+        "definition": "SHOW TAG VALUES WITH KEY=device_id",
+        "hide": 0,
+        "includeAll": true,
+        "index": -1,
+        "label": "Station #",
+        "multi": true,
+        "name": "device_id",
+        "options": [],
+        "query": "SHOW TAG VALUES WITH KEY=device_id",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1y",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Data Visualization",
+  "uid": "G0ejY53Wk",
+  "variables": {
+    "list": []
+  },
+  "version": 1
+}

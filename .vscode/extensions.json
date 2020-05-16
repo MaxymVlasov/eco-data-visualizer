@@ -24,6 +24,8 @@
     "bierner.markdown-preview-github-styles",
     "yzhang.markdown-all-in-one",
     "DavidAnson.vscode-markdownlint",
+    "funkyremi.vscode-google-translate",
+    "bierner.markdown-emoji",
 
     // Python
     "ms-python.python"

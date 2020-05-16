@@ -1,6 +1,8 @@
 # Data visualizer from SaveEcoBot. Calculate AQI
 
-This software up and run nice dashboard with metrics from CSV file and calculate AQI for PM2.5 and PM10
+>**[Читати Українською :ukraine:](README-uk.md)**
+
+This software up and run nice dashboard with metrics from CSV file and calculate AQI for PM2.5 and PM10.
 
 Air Quality Index calculations based on [this document](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf)
 
@@ -22,7 +24,7 @@ More screenshots and usage examples [here](docs/en/screenshots.md).
     * [Process new data](#process-new-data)
     * [Add new data](#add-new-data)
     * [Remove data](#remove-data)
-  * [Cleanup](#cleanup)
+  * [Full cleanup](#full-cleanup)
 * [Future plans](#future-plans)
 * [Want help?](#want-help)
 * [License and Copyrights](#license-and-copyrights)
@@ -45,19 +47,19 @@ More screenshots and usage examples [here](docs/en/screenshots.md).
 
 3. On bottom you'll see `Download raw data (CSV)`  
 ![download-csv.png](docs/en/images/download-csv.png)  
-click on them and save it to `eco-data-visualizer/data/original_data/` inside download repo.
+click on the link and save CSV-file to `./data/original_data/` inside downloaded repo.
 
 4. Open terminal in the root of `eco-data-visualizer` and run:
 
 ```bash
-# Get data
+# Data preparation
 docker build -t data-transformer ./data-transformer-app
-docker run -v $PWD/data/:/app/data/ --rm data-transformer
+docker run -v "$PWD"/data/:/app/data/ --rm data-transformer
 # Run Grafana and DBs
 docker-compose up -d
 # Add data of sensors to InfluxDB
 docker build -t add_influx_data ./provisioning/influx
-docker run -v $PWD/data/influx/:/influx-data/ --rm --network=eco-data-visualizer_default add_influx_data
+docker run -v "$PWD"/data/influx/:/influx-data/ --rm --network=eco-data-visualizer_default add_influx_data
 ```
 <!-- markdownlint-disable no-inline-html -->
 ><sup>Depending on your internet bandwidth, CPU, Storage I/O, CSV file size and number of processed files `First Init` may take different times.  
@@ -95,13 +97,14 @@ docker-compose stop
 
 1. Download CSV file from SaveEcoBot station
 2. Move it to `data/original_data` folder in this repo.
+3. Run:
 
 ```bash
 # Remove temporary files
-docker run -v $PWD/data/:/app/ --rm amancevice/pandas:1.0.3-alpine sh -c "rm -f /app/csv/*.csv /app/influx/*.influx"
-# Get data
+docker run -v "$PWD"/data/:/app/ --rm amancevice/pandas:1.0.3-alpine sh -c "rm -f /app/csv/*.csv /app/influx/*.influx"
+# Data preparation
 docker build -t data-transformer ./data-transformer-app
-docker run -v $PWD/data/:/app/data/ --rm data-transformer
+docker run -v "$PWD"/data/:/app/data/ --rm data-transformer
 ```
 
 #### Add new data
@@ -113,34 +116,36 @@ For add new data open terminal in the root of repo and run:
 docker-compose up -d
 # Add new data
 docker build -t add_influx_data ./provisioning/influx
-docker run -v $PWD/data/influx/:/influx-data/ --rm --network=eco-data-visualizer_default add_influx_data
+docker run -v "$PWD"/data/influx/:/influx-data/ --rm --network=eco-data-visualizer_default add_influx_data
 ```
 
 #### Remove data
+
+For remove sensors data open terminal in the root of repo and run:
 
 ```bash
 docker-compose down
 docker volume rm eco-data-visualizer_sensors-data
 ```
 
-### Cleanup
+### Full cleanup
 
 For cleanup open terminal in the root of repo and run:
 
 ```bash
 # Stop services
 docker-compose down
-# Remove volumes with settings and user data
+# Remove volumes with settings and sensors data
 docker volume rm eco-data-visualizer_grafana-settings eco-data-visualizer_sensors-data
 # Remove temporary files
-docker run -v $PWD/data/:/app/ --rm amancevice/pandas:1.0.3-alpine sh -c "rm -f /app/csv/*.csv /app/influx/*.influx"
+docker run -v "$PWD"/data/:/app/ --rm amancevice/pandas:1.0.3-alpine sh -c "rm -f /app/csv/*.csv /app/influx/*.influx"
 ```
 
 ## Future plans
 
 * [ ] Add Ukrainian localization
   * [ ] Code and message dashboard localization
-  * [ ] README.md localization
+  * [ ] Docs localization
 * [ ] In Grafana Create personal graphs for each sensor with own good-bad color limits and so on as for AQI
 * [ ] Grab exist metrics from 'phenomenon' colum, use `SENSORS` content only for user friendly names and localization
 * [ ] Add AQI support for all specified in [doc](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf)
@@ -154,14 +159,14 @@ docker run -v $PWD/data/:/app/ --rm amancevice/pandas:1.0.3-alpine sh -c "rm -f 
 
 You can:
 
-* Improve this software (see [Future plans](#future-plans-) section)
-* [Donate to SaveEcoBot](https://www.saveecobot.com/en/donate)
-* Assemble or buy Air quality monitoring station and connect it to SaveEcoBot. SaveDnipro can assemble and connect it for you. [Buy here](https://www.savednipro.org/product/stanciya-monitoringu-yakosti-povitrya/)
+* Improve this software (see [Future plans](#future-plans-) section).
+* [Donate to SaveEcoBot](https://www.saveecobot.com/en/donate).
+* Assemble or buy Air quality monitoring station and connect it to SaveEcoBot. SaveDnipro can assemble and connect it for you. [Buy here](https://www.savednipro.org/product/stanciya-monitoringu-yakosti-povitrya/).
 
 ## License and Copyrights
 
-This software licensed by [Apache License 2.0](LICENSE)
+This software licensed by [Apache License 2.0](LICENSE).
 
-All data from SaveEcoBot licensed by [Creative Commons Attribution License 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode)
+All data from SaveEcoBot licensed by [Creative Commons Attribution License 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode).
 
 Other data and sources can be licensed in different way.

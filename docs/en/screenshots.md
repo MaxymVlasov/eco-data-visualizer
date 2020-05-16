@@ -10,26 +10,28 @@
 
 Back to [README.md](../../README.md)
 
+<!-- markdownlint-disable heading-increment -->
 ##### Change step for data aggregation (detalization) [`↑`](#screenshots-and-usage-examples)
+<!-- markdownlint-disable heading-increment -->
 
-![](images/example-change-detalization.png)
+![Example](images/example-change-detalization.png)
 
 ##### Choose time interval [`↑`](#screenshots-and-usage-examples)
 
 Also have Zoom IN and Zoom OUT functional. And you can select interval in graph.
 
-![](images/example-date-change.png)
+![Example](images/example-date-change.png)
 
 ##### Compare data from many stations [`↑`](#screenshots-and-usage-examples)
 
-![](images/example-multi-stations.png)
+![Example](images/example-multi-stations.png)
 
 ##### Show sensors original data [`↑`](#screenshots-and-usage-examples)
 
-![](images/example-original-data.png)
+![Example](images/example-original-data.png)
 
 ##### Select sensors that should be shown in `Original data` row [`↑`](#screenshots-and-usage-examples)
 
-![](images/example-select-sensors.png)
+![Example](images/example-select-sensors.png)
 
 Back to [README.md](../../README.md)

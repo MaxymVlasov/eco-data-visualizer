@@ -6,5 +6,31 @@
   "markdownlint.config": {
     "ol-prefix": false,
     "no-multiple-blanks": { "maximum": 5 }
-  }
+  },
+  "cSpell.words": [
+    "GRAVATAR",
+    "amancevice",
+    "arey",
+    "autopep",
+    "datasources",
+    "dnipro",
+    "dtype",
+    "executables",
+    "healthcheck",
+    "heca",
+    "influxdb",
+    "innodb",
+    "linebreak",
+    "markdownlint",
+    "mbit",
+    "mktime",
+    "mysqladmin",
+    "mysqld",
+    "permalinks",
+    "ppassword",
+    "pylint",
+    "strftime",
+    "strptime",
+    "submodules"
+  ]
 }

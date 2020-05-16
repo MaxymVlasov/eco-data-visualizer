@@ -1,45 +1,75 @@
 #!/usr/bin/env python3
+"""
+Data-transformer-app:
+1. Grub CSV files located in ./data/original_data folder with
+    SaveEcoBot structure (device_id,phenomenon,value,logged_at,value_text).
+2. Separate CSV files per device_id and sensor type (phenomenon)
+    and write result to ./data/csv/*.csv files.
+3. Transform data from ./data/csv to InfluxDB format
+    and write result to ./data/influx/*.influx files.
+
+Recommended way to run:
+    docker build -t data-transformer ./data-transformer-app
+    docker run -v $PWD/data/:/app/data/ --rm data-transformer
+"""
+import csv
 import time
 from datetime import datetime
-import pandas as pd
-import csv
 from os import listdir
 
-def process(df, sensor):
+import pandas as pd
+
+
+def process(df, file, sensor):
     df.loc[
         # Choose only rows where with 'phenomenon' colum == sensor name
         df['phenomenon'] == sensor
-        ].sort_values(
-            by=['logged_at']
+    ].sort_values(
+        by=['logged_at'],
         # Make valid numbers for data sheets
-        ).to_csv(
-            # Name file as sensor name
-            f'data/csv/{file}-{sensor}.csv',
-            # Save only time and value
-            columns=['device_id', 'logged_at', 'value'],
-            # Don't wrote doc num colum
-            index=False,
-            # Don't wrote header name - it wrotes on iad DataDrame Iteration
-            header=False,
-            # Append data to file
-            mode='a',
-        )
+    ).to_csv(
+        # Name file as sensor name
+        f'data/csv/{file}-{sensor}.csv',
+        # Save only time and value
+        columns=['device_id', 'logged_at', 'value'],
+        # Don't wrote doc num colum
+        index=False,
+        # Don't wrote header name - it writes on each DataFrame Iteration
+        header=False,
+        # Append data to file
+        mode='a',
+    )
 
-def write_influx_data(sensor, sensor_name_for_user, date, concentration, device_id, aqi=None):
+
+def write_influx_data(sensor, sensor_name_for_user, file, date, concentration, device_id, aqi=None):
     with open(f'data/influx/{file}-{sensor}.influx', mode='a') as f:
         date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S").timetuple()
         date = int(time.mktime(date) * 10 ** 9)
 
         if aqi:
-            f.write(f'{sensor_name_for_user},device_id={device_id},have_aqi=true ' + \
-                f'aqi={aqi},concentration={concentration} {date}\n')
+            f.write(
+                f'{sensor_name_for_user},device_id={device_id},have_aqi=true ' +
+                f'aqi={aqi},concentration={concentration} {date}\n',
+            )
         else:
-            f.write(f'{sensor_name_for_user},device_id={device_id},have_aqi=false ' + \
-                f'concentration={concentration} {date}\n')
+            f.write(
+                f'{sensor_name_for_user},device_id={device_id},have_aqi=false ' +
+                f'concentration={concentration} {date}\n',
+            )
 
-def find_csv_filenames(path_to_dir, suffix=".csv" ):
+
+def find_csv_filenames(path_to_dir, suffix=".csv"):
+    """
+    Find all files with specified extention
+
+    Args:
+        path_to_dir (str): Path to dir where files where to look for files
+        suffix (str): File extention. Default to ".csv"
+    Returns:
+        array
+    """
     filenames = listdir(path_to_dir)
-    return [ filename for filename in filenames if filename.endswith( suffix ) ]
+    return [filename for filename in filenames if filename.endswith(suffix)]
 
 
 AQI = {
@@ -131,13 +161,12 @@ AQI = {
             'pollutant_high': 604,
             'pollutant_low': 505,
         },
-    }
+    },
 }
 
 # DataFrame size, number of rows proceeded by one iteration.
 # More - high memore usage, low - too long.
-chunksize = 10 ** 8
-
+CHUNKSIZE = 10 ** 8
 
 
 # sensors name from 'phenomenon' colum
@@ -157,7 +186,7 @@ SENSORS = {
 }
 
 # SaveEcoBot CSV file
-PATH='data/original_data'
+PATH = 'data/original_data'
 FILES = find_csv_filenames(PATH)
 
 print(f'Found next files: {FILES}')
@@ -165,7 +194,10 @@ print(f'Found next files: {FILES}')
 for file in FILES:
 
     for sensor in SENSORS:
-        print(f'\n{time.strftime("%H:%M:%S")} - Start work on "{SENSORS[sensor]}" sensor data from {file}')
+        print(
+            f'\n{time.strftime("%H:%M:%S")} - ' +
+            f'Start work on "{SENSORS[sensor]}" sensor data from {file}',
+        )
 
         #
         # Split sensors data to separate file and sort it
@@ -174,9 +206,9 @@ for file in FILES:
         # Cleanup previous data
         open(f'data/csv/{file}-{sensor}.csv', 'w').close()
 
-        for chunk in pd.read_csv(f'{PATH}/{file}', chunksize=chunksize, delimiter=',', dtype=str):
-            print(f'{time.strftime("%H:%M:%S")} ----- Proccess chunk rows: {chunksize}')
-            process(chunk, sensor)
+        for chunk in pd.read_csv(f'{PATH}/{file}', chunksize=CHUNKSIZE, delimiter=',', dtype=str):
+            print(f'{time.strftime("%H:%M:%S")} ----- Proccess chunk rows: {CHUNKSIZE}')
+            process(chunk, file, sensor)
 
         # Save uniq rows
         print(f'{time.strftime("%H:%M:%S")} ----- Get unique rows')
@@ -184,7 +216,6 @@ for file in FILES:
             lines = set(f.readlines())
         with open(f'data/csv/{file}-{sensor}.csv', 'w') as f:
             f.writelines(lines)
-
 
         #
         # Get data for Influx
@@ -202,17 +233,16 @@ CREATE DATABASE sensors
 
 """)
 
-
         with open(f'data/csv/{file}-{sensor}.csv', mode='r') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
-            line_count = 0
+
             for row in csv_reader:
                 device_id = row[0]
                 date = row[1]
                 concentration = round(float(row[2]), 1)
 
                 if sensor not in AQI:
-                    write_influx_data(sensor, SENSORS[sensor], date, concentration, device_id)
+                    write_influx_data(sensor, SENSORS[sensor], file, date, concentration, device_id)
                     continue
 
                 #
@@ -232,4 +262,7 @@ CREATE DATABASE sensors
 
                 aqi = round(aqi)
 
-                write_influx_data(sensor, SENSORS[sensor], date, concentration, device_id, aqi)
+                write_influx_data(
+                    sensor, SENSORS[sensor], file,
+                    date, concentration, device_id, aqi,
+                )

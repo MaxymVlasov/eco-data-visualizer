@@ -12,4 +12,4 @@ providers:
   # <bool> allow updating provisioned dashboards from the UI
   allowUiUpdates: true
   options:
-    path: /etc/grafana/provisioning/dashboards/data-visualisation.json
+    path: /etc/grafana/provisioning/dashboards/data-visualization.json

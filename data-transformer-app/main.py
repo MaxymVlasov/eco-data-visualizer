@@ -174,7 +174,7 @@ for file in FILES:
         # Cleanup previous data
         open(f'data/csv/{file}-{sensor}.csv', 'w').close()
 
-        for chunk in pd.read_csv(f'{PATH}/{file}', chunksize=chunksize, delimiter=','):
+        for chunk in pd.read_csv(f'{PATH}/{file}', chunksize=chunksize, delimiter=',', dtype=str):
             print(f'{time.strftime("%H:%M:%S")} ----- Proccess chunk rows: {chunksize}')
             process(chunk, sensor)
 

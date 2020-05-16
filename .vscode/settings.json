@@ -1,0 +1,10 @@
+{
+  "markdown.extension.toc.githubCompatibility": true,
+  "markdown.extension.toc.unorderedList.marker": "*",
+  "markdown.extension.toc.levels": "2..6",
+  "cSpell.language": "en,uk",
+  "markdownlint.config": {
+    "ol-prefix": false,
+    "no-multiple-blanks": { "maximum": 5 }
+  }
+}

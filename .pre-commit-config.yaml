@@ -26,3 +26,41 @@ repos:
     - id: detect-aws-credentials
       args: ['--allow-missing-credentials']
     - id: detect-private-key
+
+
+##########
+# PYTHON #
+##########
+
+- repo: https://github.com/asottile/reorder_python_imports
+  rev: v2.2.0
+  hooks:
+    - id: reorder-python-imports
+      language_version: python3
+
+- repo: https://github.com/asottile/add-trailing-comma
+  rev: v2.0.1
+  hooks:
+    - id: add-trailing-comma
+      language_version: python3
+
+- repo: https://github.com/pre-commit/mirrors-autopep8
+  rev: v1.5.2
+  hooks:
+    - id: autopep8
+      language_version: python3
+      args:
+      - -i
+      - --max-line-length=100
+
+
+# Usage: http://pylint.pycqa.org/en/latest/user_guide/message-control.html
+- repo: https://github.com/PyCQA/pylint
+  rev: pylint-2.5.0
+  hooks:
+    - id: pylint
+      language_version: python3
+      args: [
+        '--disable=import-error', # E0401. Locally you could not have all imports.
+        '--disable=fixme', # W0511. 'TODO' notations.
+      ]

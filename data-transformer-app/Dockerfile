@@ -4,7 +4,12 @@ LABEL maintainer="MaxymVlasov"
 
 WORKDIR /app
 
-COPY main.py .
+COPY main.py requirements-dev.txt ./
+
+ARG ENV="${ENV:-prod}"
+RUN if [ "$ENV" != 'prod' ]; then \
+        pip3 --no-cache-dir install -r requirements-dev.txt; \
+    fi
 
 VOLUME [ "/app/data/" ]
 

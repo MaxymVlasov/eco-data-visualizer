@@ -1,2 +1,4 @@
 *.csv
 *.influx
+.mypy_cache/
+.vscode/.ropeproject/config.py

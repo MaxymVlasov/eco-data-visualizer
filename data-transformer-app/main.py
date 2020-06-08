@@ -19,7 +19,15 @@ from os import listdir
 
 import pandas as pd
 
+try:
+    from typeguard import typechecked
+except ModuleNotFoundError:
+    def typechecked(func=None):
+        """Skip runtime type checking on the function arguments."""
+        return func
 
+
+@typechecked
 def process(df, file, sensor):
     df.loc[
         # Choose only rows where with 'phenomenon' colum == sensor name
@@ -41,6 +49,7 @@ def process(df, file, sensor):
     )
 
 
+@typechecked
 def write_influx_data(sensor, sensor_name_for_user, file, date, concentration, device_id, aqi=None):
     with open(f'data/influx/{file}-{sensor}.influx', mode='a') as f:
         date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S").timetuple()
@@ -58,6 +67,7 @@ def write_influx_data(sensor, sensor_name_for_user, file, date, concentration, d
             )
 
 
+@typechecked
 def find_csv_filenames(path_to_dir, suffix=".csv"):
     """
     Find all files with specified extention

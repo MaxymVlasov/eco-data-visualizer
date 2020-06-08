@@ -25,6 +25,7 @@ More screenshots and usage examples [here](docs/en/screenshots.md).
     * [Add new data](#add-new-data)
     * [Remove data](#remove-data)
   * [Full cleanup](#full-cleanup)
+* [For contributors](#for-contributors)
 * [Future plans](#future-plans)
 * [Want help?](#want-help)
 * [License and Copyrights](#license-and-copyrights)
@@ -139,6 +140,14 @@ docker-compose down
 docker volume rm eco-data-visualizer_grafana-settings eco-data-visualizer_sensors-data
 # Remove temporary files
 docker run -v "$PWD"/data/:/app/ --rm amancevice/pandas:1.0.3-alpine sh -c "rm -f /app/csv/*.csv /app/influx/*.influx"
+```
+
+## For contributors
+
+Use same instructions from [Quick start](#quick-start) section but in step 4 add `--build-arg ENV=dev` for `data-transformer-app`.
+
+```bash
+docker build --build-arg ENV=dev -t data-transformer ./data-transformer-app
 ```
 
 ## Future plans

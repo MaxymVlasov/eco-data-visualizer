@@ -33,6 +33,7 @@
     "mypy",
     "mysqladmin",
     "mysqld",
+    "noqa",
     "permalinks",
     "ppassword",
     "pylint",

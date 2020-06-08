@@ -20,13 +20,14 @@ import sys
 import time
 from datetime import datetime
 from os import listdir
+from typing import Dict
 
 import pandas as pd
 
 try:
-    from typeguard import typechecked
+    from typeguard import typechecked  # noqa: WPS433
 except ModuleNotFoundError:
-    def typechecked(func=None):
+    def typechecked(func=None):  # noqa: WPS440
         """Skip runtime type checking on the function arguments."""
         return func
 
@@ -68,8 +69,8 @@ def process(dataframe: pd.core.frame.DataFrame, filename: str, sensor: str):
     )
 
 
-@typechecked
-def write_influx_data(
+@typechecked  # noqa: WPS211
+def write_influx_data(  # pylint: disable=too-many-arguments
     filename: str,
     sensor_name_for_user: str,
     date,
@@ -88,10 +89,10 @@ def write_influx_data(
         aqi: (int) Air Quality Index. Default to None.
     """
     with open(f'data/influx/{filename}.influx', mode='a') as influx_file:
-        date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S').timetuple()
+        date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S').timetuple()  # noqa: WPS323
         date = int(time.mktime(date) * 10 ** 9)
 
-        if aqi == None:
+        if aqi is None:
             influx_file.write(
                 f'{sensor_name_for_user},device_id={device_id},have_aqi=false '
                 + f'concentration={concentration} {date}\n',
@@ -104,9 +105,8 @@ def write_influx_data(
 
 
 @typechecked
-def find_csv_filenames(path_to_dir: str, suffix: str = ".csv"):
-    """
-    Find all files with specified extention
+def find_csv_filenames(path_to_dir: str, suffix: str = '.csv'):
+    """Find all files with specified extention.
 
     Args:
         path_to_dir (str): Path to dir where files where to look for files
@@ -121,8 +121,8 @@ def find_csv_filenames(path_to_dir: str, suffix: str = ".csv"):
 @typechecked
 def main() -> None:
     """Logic."""
-    AQI = {
-        # Key == pm25_high
+    aqi: Dict[str, dict] = {
+        # Key == `pm25_high`
         'pm25': {
             '12.0': {
                 'aqi_high': 50,
@@ -215,12 +215,12 @@ def main() -> None:
 
     # DataFrame size, number of rows proceeded by one iteration.
     # More - high memore usage, low - too long.
-    CHUNKSIZE = 10 ** 8
+    chunk_size = 10 ** 8
 
     # sensors name from 'phenomenon' colum
     # sensors value - for user readability
-    #!!! WARNING !!!: Don't use spaces and commas
-    SENSORS = {
+    # !!! WARNING !!!: Don't use spaces and commas
+    sensors = {
         'pm10': 'PM10_mcg/m³',
         'pm25': 'PM2.5_mcg/m³',
         'heca_humidity': 'HECA_relative_humidity_%',
@@ -234,25 +234,25 @@ def main() -> None:
     }
 
     # SaveEcoBot CSV file
-    PATH = 'data/original_data'
-    FILES = find_csv_filenames(PATH)
+    path = 'data/original_data'
+    files = find_csv_filenames(path)
 
-    if not FILES:
-        logger.error(
-            'CSV-files not found. Did you add any in `./data/original_data` as it specified in\n'
+    if not files:
+        logger.error(  # pylint: disable=logging-not-lazy
+            'CSV-files not found. Did you add any in `./data/original_data` as it specified in '
             + 'https://github.com/MaxymVlasov/eco-data-visualizer#quick-start ?',
         )
         sys.exit(errno.ENOENT)
 
-    logger.info(f'Found next files: {FILES}')
+    logger.info(f'Found next files: {files}')
 
-    for file in FILES:
+    for filename in files:
 
-        for sensor in SENSORS:
-            sensor_file = f'{file}-{sensor}'
+        for sensor, human_readable_sensor_name in sensors.items():
+            sensor_file = f'{filename}-{sensor}'
             logger.info(
                 f'\n{time.strftime("%H:%M:%S")} - ' +
-                f'Start work on "{SENSORS[sensor]}" sensor data from {file}',
+                f'Start work on "{human_readable_sensor_name}" sensor data from {filename}',
             )
 
             #
@@ -260,18 +260,24 @@ def main() -> None:
             #
 
             # Cleanup previous data
-            open(f'data/csv/{sensor_file}.csv', 'w').close()
+            open(f'data/csv/{sensor_file}.csv', 'w').close()  # noqa: WPS515
 
-            for chunk in pd.read_csv(f'{PATH}/{file}', chunksize=CHUNKSIZE, delimiter=',', dtype=str):
-                logger.info(f'{time.strftime("%H:%M:%S")} ----- Proccess chunk rows: {CHUNKSIZE}')
+            pandas_csv = pd.read_csv(
+                f'{path}/{filename}',
+                chunksize=chunk_size,
+                delimiter=',',
+                dtype=str,
+            )
+            for chunk in pandas_csv:
+                logger.info(f'{time.strftime("%H:%M:%S")} ----- Proccess chunk rows: {chunk_size}')
                 process(chunk, sensor_file, sensor)
 
             # Save uniq rows
             logger.info(f'{time.strftime("%H:%M:%S")} ----- Get unique rows')
             with open(f'data/csv/{sensor_file}.csv', 'r') as csv_file:
                 lines = set(csv_file.readlines())
-            with open(f'data/csv/{sensor_file}.csv', 'w') as csv_file:
-                csv_file.writelines(lines)
+            with open(f'data/csv/{sensor_file}.csv', 'w') as csv_file:  # noqa: WPS440
+                csv_file.writelines(lines)  # noqa: WPS441
 
             #
             # Get data for Influx
@@ -289,18 +295,18 @@ CREATE DATABASE sensors
 
 """)
 
-            with open(f'data/csv/{sensor_file}.csv', mode='r') as csv_file:
-                csv_reader = csv.reader(csv_file, delimiter=',')
+            with open(f'data/csv/{sensor_file}.csv', mode='r') as csv_file:  # noqa: WPS440
+                csv_reader = csv.reader(csv_file, delimiter=',')  # noqa: WPS441
 
                 for row in csv_reader:
                     device_id = row[0]
                     date = row[1]
                     concentration = round(float(row[2]), 1)
 
-                    if sensor not in AQI:
+                    if sensor not in aqi:
                         write_influx_data(
                             sensor_file,
-                            SENSORS[sensor],
+                            human_readable_sensor_name,
                             date,
                             concentration,
                             device_id,
@@ -311,27 +317,24 @@ CREATE DATABASE sensors
                     # CALCULATING THE AQI
                     #
 
-                    for high in AQI[sensor]:
-                        if concentration < float(high):
-                            _ = AQI[sensor][high]
+                    for upper_bound, _ in aqi[sensor].items():
+                        if concentration < float(upper_bound):
+                            aqi_value = (
+                                (_['aqi_high'] - _['aqi_low'])
+                                / (_['pollutant_high'] - _['pollutant_low'])
+                                * (concentration - _['pollutant_low'])
+                                + _['aqi_low']
+                            )
+                            aqi_value = round(aqi_value)
                             break
-
-                    aqi = (
-                        (_['aqi_high'] - _['aqi_low'])
-                        / (_['pollutant_high'] - _['pollutant_low'])
-                        * (concentration - _['pollutant_low'])
-                        + _['aqi_low']
-                    )
-
-                    aqi = round(aqi)
 
                     write_influx_data(
                         sensor_file,
-                        SENSORS[sensor],
+                        human_readable_sensor_name,
                         date,
                         concentration,
                         device_id,
-                        aqi,
+                        aqi_value,
                     )
 
 

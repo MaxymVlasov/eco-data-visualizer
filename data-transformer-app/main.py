@@ -33,10 +33,15 @@ except ModuleNotFoundError:
     def typechecked(func=None):  # noqa: WPS440
         """Skip runtime type checking on the function arguments."""
         return func
+else:
+    from types import MappingProxyType  # noqa: WPS433 pylint: disable=unused-import
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-logger.addHandler(logging.StreamHandler(sys.stdout))
+logs = logging.StreamHandler(sys.stdout)
+logger.addHandler(logs)
+
 
 #######################################################################
 #                          F U N C T I O N S                          #
@@ -44,7 +49,11 @@ logger.addHandler(logging.StreamHandler(sys.stdout))
 
 
 @typechecked
-def process(dataframe: pd.core.frame.DataFrame, filename: str, sensor: str):
+def process_chunk_rows(
+    dataframe: pd.core.frame.DataFrame,
+    filename: str,
+    sensor: str,
+):
     """Split sensors data to separate file and sort it.
 
     Args:
@@ -72,11 +81,29 @@ def process(dataframe: pd.core.frame.DataFrame, filename: str, sensor: str):
     )
 
 
+@typechecked
+def remove_duplicate_rows(filename: str, extention: str = '.csv'):
+    """Remove duplicate rows from provided file.
+
+    Args:
+        filename: (str) Filename of processed file.
+        extention (str): File extention. Default to ".csv"
+    """
+    with open(f'data/csv/{filename}{extention}', 'r+') as csv_file:
+        # Get unique rows
+        lines = set(csv_file.readlines())
+        # Cleanup file
+        csv_file.seek(0)
+        csv_file.truncate()
+        # Write unique rows
+        csv_file.writelines(lines)
+
+
 @typechecked  # noqa: WPS211
 def write_influx_data(  # pylint: disable=too-many-arguments
     filename: str,
     sensor_name_for_user: str,
-    date,
+    date: int,
     concentration: float,
     device_id: str,
     aqi: int = None,
@@ -92,8 +119,6 @@ def write_influx_data(  # pylint: disable=too-many-arguments
         aqi: (int) Air Quality Index. Default to None.
     """
     with open(f'data/influx/{filename}.influx', mode='a') as influx_file:
-        date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S').timetuple()  # noqa: WPS323
-        date = int(time.mktime(date) * 10 ** 9)
 
         if aqi is None:
             influx_file.write(
@@ -122,6 +147,56 @@ def find_csv_filenames(path_to_dir: str, suffix: str = '.csv'):
 
 
 @typechecked
+def calculate_aqi(aqi: 'MappingProxyType[str, dict]', sensor: str, concentration: float) -> int:
+    """Calculate Air Quality Index.
+
+    Calculations based on:
+    https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf
+
+    Args:
+        aqi: (MappingProxyType[str, dict]) Nested dictionary with values for AQI calculation.
+        sensor: (str) Sensor name for which it will AQI count.
+        concentration: (float) Raw data from sensor.
+
+    Returns:
+        int: Air Quality Index value.
+
+    """
+    for upper_bound, _ in aqi[sensor].items():
+        if concentration < float(upper_bound):
+            aqi_value = (
+                (_['aqi_high'] - _['aqi_low'])
+                / (_['pollutant_high'] - _['pollutant_low'])
+                * (concentration - _['pollutant_low'])
+                + _['aqi_low']
+            )
+            break
+
+    return round(aqi_value)
+
+
+@typechecked
+def transform_date_to_nanoseconds(date) -> int:
+    """Get date from string and return it in UNIX nanoseconds format.
+
+    Args:
+        date: (str) Datetime string in `%Y-%m-%d %H:%M:%S` format.
+
+    Returns:
+        int: Date in UNIX nanoseconds.
+    """
+    date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S').timetuple()  # noqa: WPS323
+    date = time.mktime(date) * 10 ** 9
+
+    return int(date)
+
+
+#######################################################################
+#                               M A I N                               #
+#######################################################################
+
+
+@typechecked
 def main() -> None:
     """Logic."""
     files = find_csv_filenames(PATH)
@@ -138,11 +213,22 @@ def main() -> None:
     for filename in files:
 
         for sensor, human_readable_sensor_name in SENSORS.items():
-            sensor_file = f'{filename}-{sensor}'
+
+            logs.setFormatter(
+                logging.Formatter(
+                    '\n{asctime} - {message}', datefmt='%H:%M:%S', style='{',
+                ),
+            )
             logger.info(
-                f'\n{time.strftime("%H:%M:%S")} - ' +
                 f'Start work on "{human_readable_sensor_name}" sensor data from {filename}',
             )
+            logs.setFormatter(
+                logging.Formatter(
+                    '{asctime} ----- {message}', datefmt='%H:%M:%S', style='{',
+                ),
+            )
+
+            sensor_file = f'{filename}-{sensor}'
 
             #
             # Split sensors data to separate file and sort it
@@ -158,20 +244,16 @@ def main() -> None:
                 dtype=str,
             )
             for chunk in pandas_csv:
-                logger.info(f'{time.strftime("%H:%M:%S")} ----- Proccess chunk rows: {CHUNKSIZE}')
-                process(chunk, sensor_file, sensor)
+                logger.info(f'Proccess chunk rows: {CHUNKSIZE}')
+                process_chunk_rows(chunk, sensor_file, sensor)
 
-            # Save uniq rows
-            logger.info(f'{time.strftime("%H:%M:%S")} ----- Get unique rows')
-            with open(f'data/csv/{sensor_file}.csv', 'r') as csv_file:
-                lines = set(csv_file.readlines())
-            with open(f'data/csv/{sensor_file}.csv', 'w') as csv_file:  # noqa: WPS440
-                csv_file.writelines(lines)  # noqa: WPS441
+            logger.info('Get unique rows')
+            remove_duplicate_rows(sensor_file)
 
             #
             # Get data for Influx
             #
-            logger.info(f'{time.strftime("%H:%M:%S")} ----- Transform data for Database format')
+            logger.info('Transform data for Database format')
 
             # Cleanup previous data
             with open(f'data/influx/{sensor_file}.influx', 'w') as influx_file:
@@ -184,15 +266,15 @@ CREATE DATABASE sensors
 
 """)
 
-            with open(f'data/csv/{sensor_file}.csv', mode='r') as csv_file:  # noqa: WPS440
-                csv_reader = csv.reader(csv_file, delimiter=',')  # noqa: WPS441
+            with open(f'data/csv/{sensor_file}.csv', mode='r') as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=',')
 
-                for row in csv_reader:
-                    device_id = row[0]
-                    date = row[1]
-                    concentration = round(float(row[2]), 1)
+                if sensor not in AQI:
+                    for row in csv_reader:
+                        device_id = row[0]
+                        date = transform_date_to_nanoseconds(row[1])
+                        concentration = round(float(row[2]), 1)
 
-                    if sensor not in AQI:
                         write_influx_data(
                             sensor_file,
                             human_readable_sensor_name,
@@ -200,22 +282,14 @@ CREATE DATABASE sensors
                             concentration,
                             device_id,
                         )
-                        continue
+                    continue
 
-                    #
-                    # CALCULATING THE AQI
-                    #
+                for row in csv_reader:  # noqa: WPS440
+                    device_id = row[0]  # noqa: WPS441
+                    date = transform_date_to_nanoseconds(row[1])  # noqa: WPS441
+                    concentration = round(float(row[2]), 1)  # noqa: WPS441
 
-                    for upper_bound, _ in AQI[sensor].items():
-                        if concentration < float(upper_bound):
-                            aqi_value = (
-                                (_['aqi_high'] - _['aqi_low'])
-                                / (_['pollutant_high'] - _['pollutant_low'])
-                                * (concentration - _['pollutant_low'])
-                                + _['aqi_low']
-                            )
-                            aqi_value = round(aqi_value)
-                            break
+                    aqi = calculate_aqi(AQI, sensor, concentration)
 
                     write_influx_data(
                         sensor_file,
@@ -223,7 +297,7 @@ CREATE DATABASE sensors
                         date,
                         concentration,
                         device_id,
-                        aqi_value,
+                        aqi,
                     )
 
 

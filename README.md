@@ -65,9 +65,9 @@ docker run -v "$PWD"/data/influx/:/influx-data/ --rm --network=eco-data-visualiz
 <!-- markdownlint-disable no-inline-html -->
 ><sup>Depending on your internet bandwidth, CPU, Storage I/O, CSV file size and number of processed files `First Init` may take different times.  
 For example, in laptop with `100Mbit/s` bandwidth, `Intel Core i7-8550U` (max clock speed `4Ghz`), SSD disk and:</sup>  
-<sup>  - 2 CSV files (together: 620MB) it takes `11m47s` (`9m39s` to transform data)</sup>  
-<sup>  - 1 CSV file (513MB) - `6m16s` (`4m18s` to transform data)</sup>  
-<sup>  - 1 CSV file (107MB) - `6m35s` (`4m32s` to transform data)</sup>
+<sup>  - 2 CSV files (together: 620MB) it takes `8m11s` (`6m09s` to transform data)</sup>  
+<sup>  - 1 CSV file (513MB) - `5m27s` (`3m47s` to transform data)</sup>  
+<sup>  - 1 CSV file (107MB) - `3m42s` (`2m` to transform data)</sup>
 <!-- markdownlint-enable no-inline-html -->
 
 5. Open [http://localhost/](http://localhost/) for see visualizations!
@@ -160,7 +160,7 @@ docker build --build-arg ENV=dev -t data-transformer ./data-transformer-app
 * [ ] Add AQI support for all specified in [doc](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf)
 * [ ] Optimize `data-transformer-app`
   * [ ] Parallel sensors operation execution
-  * [ ] Use less Disk I/O operations
+  * [x] Use less Disk I/O operations
 
 <!-- markdownlint-disable no-trailing-punctuation -->
 ## Want help?

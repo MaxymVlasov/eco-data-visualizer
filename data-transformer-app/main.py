@@ -21,11 +21,8 @@ import time
 from datetime import datetime
 from os import listdir
 
+import configs as conf
 import pandas as pd
-from configs import AQI
-from configs import CHUNKSIZE
-from configs import PATH
-from configs import SENSORS
 
 try:
     from typeguard import typechecked  # noqa: WPS433
@@ -99,37 +96,16 @@ def remove_duplicate_rows(filename: str, extention: str = '.csv'):
         csv_file.writelines(lines)
 
 
-@typechecked  # noqa: WPS211
-def write_influx_data(  # pylint: disable=too-many-arguments
-    filename: str,
-    sensor_name_for_user: str,
-    date: int,
-    concentration: float,
-    device_id: str,
-    aqi: int = None,
-):
+@typechecked
+def write_influx_data(filename: str, collection: set):
     """Append file with data in InfluxDB format.
 
     Args:
         filename: (str) Filename.
-        sensor_name_for_user: (str) Human readable sensor name.
-        date: (str) Datetime string in `%Y-%m-%d %H:%M:%S` format.
-        concentration: (float) Sensor value at `date`.
-        device_id: (str) SaveEcoBot Device ID where this sensor installed.
-        aqi: (int) Air Quality Index. Default to None.
+        collection: (set) Data for file append.
     """
     with open(f'data/influx/{filename}.influx', mode='a') as influx_file:
-
-        if aqi is None:
-            influx_file.write(
-                f'{sensor_name_for_user},device_id={device_id},have_aqi=false '
-                + f'concentration={concentration} {date}\n',
-            )
-        else:
-            influx_file.write(
-                f'{sensor_name_for_user},device_id={device_id},have_aqi=true '
-                + f'aqi={aqi},concentration={concentration} {date}\n',
-            )
+        influx_file.writelines(element for element in collection)
 
 
 @typechecked
@@ -196,10 +172,10 @@ def transform_date_to_nanoseconds(date) -> int:
 #######################################################################
 
 
-@typechecked
-def main() -> None:
+@typechecked  # noqa: WPS210, WPS213, WPS231
+def main() -> None:  # pylint: disable=R0914
     """Logic."""
-    files = find_csv_filenames(PATH)
+    files = find_csv_filenames(conf.PATH)
 
     if not files:
         logger.error(  # pylint: disable=logging-not-lazy
@@ -211,8 +187,7 @@ def main() -> None:
     logger.info(f'Found next files: {files}')
 
     for filename in files:
-
-        for sensor, human_readable_sensor_name in SENSORS.items():
+        for sensor, human_readable_sensor_name in conf.SENSORS.items():
 
             logs.setFormatter(
                 logging.Formatter(
@@ -238,13 +213,13 @@ def main() -> None:
             open(f'data/csv/{sensor_file}.csv', 'w').close()  # noqa: WPS515
 
             pandas_csv = pd.read_csv(
-                f'{PATH}/{filename}',
-                chunksize=CHUNKSIZE,
+                f'{conf.PATH}/{filename}',
+                chunksize=conf.CHUNKSIZE,
                 delimiter=',',
                 dtype=str,
             )
             for chunk in pandas_csv:
-                logger.info(f'Proccess chunk rows: {CHUNKSIZE}')
+                logger.info(f'Proccess chunk rows: {conf.CHUNKSIZE}')
                 process_chunk_rows(chunk, sensor_file, sensor)
 
             logger.info('Get unique rows')
@@ -253,7 +228,7 @@ def main() -> None:
             #
             # Get data for Influx
             #
-            logger.info('Transform data for Database format')
+            logger.info('Transform data to Database format')
 
             # Cleanup previous data
             with open(f'data/influx/{sensor_file}.influx', 'w') as influx_file:
@@ -266,39 +241,31 @@ CREATE DATABASE sensors
 
 """)
 
+            influx_data = set()
+            can_calculate_aqi = sensor in conf.AQI
+
             with open(f'data/csv/{sensor_file}.csv', mode='r') as csv_file:
                 csv_reader = csv.reader(csv_file, delimiter=',')
 
-                if sensor not in AQI:
-                    for row in csv_reader:
-                        device_id = row[0]
-                        date = transform_date_to_nanoseconds(row[1])
-                        concentration = round(float(row[2]), 1)
+                for row in csv_reader:
+                    device_id = row[0]
+                    date = transform_date_to_nanoseconds(row[1])
+                    concentration = round(float(row[2]), 1)
 
-                        write_influx_data(
-                            sensor_file,
-                            human_readable_sensor_name,
-                            date,
-                            concentration,
-                            device_id,
+                    if can_calculate_aqi:
+                        aqi = calculate_aqi(conf.AQI, sensor, concentration)  # noqa: WPS220
+
+                        influx_data.add(  # noqa: WPS220
+                            f'{human_readable_sensor_name},device_id={device_id},have_aqi=true '
+                            + f'aqi={aqi},concentration={concentration} {date}\n',
                         )
-                    continue
+                    else:
+                        influx_data.add(  # noqa: WPS220
+                            f'{human_readable_sensor_name},device_id={device_id},have_aqi=false '
+                            + f'concentration={concentration} {date}\n',
+                        )
 
-                for row in csv_reader:  # noqa: WPS440
-                    device_id = row[0]  # noqa: WPS441
-                    date = transform_date_to_nanoseconds(row[1])  # noqa: WPS441
-                    concentration = round(float(row[2]), 1)  # noqa: WPS441
-
-                    aqi = calculate_aqi(AQI, sensor, concentration)
-
-                    write_influx_data(
-                        sensor_file,
-                        human_readable_sensor_name,
-                        date,
-                        concentration,
-                        device_id,
-                        aqi,
-                    )
+            write_influx_data(sensor_file, influx_data)
 
 
 if __name__ == '__main__':

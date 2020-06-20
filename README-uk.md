@@ -7,7 +7,7 @@
 Це програмне забезпечення підготує та запустить панель з усіма показниками з CSV-файлу а також обчислить і покаже AQI для PM2.5 та PM10.
 
 <!-- Air Quality Index calculations based on [this document](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf) -->
-Розрахунки Індексу Якості Повітря (Air Quality Index) базуються на основі [цього документа](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf)
+Розрахунки Індексу Якості Повітря (Air Quality Index) базуються на основі [цього документа](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf).
 
 ![Як це виглядає](docs/en/images/first-view.png)
 
@@ -49,7 +49,13 @@
 ### Швидкий старт
 
 <!-- 1. Clone this repo or [download it as zip](https://github.com/MaxymVlasov/eco-data-visualizer/archive/master.zip) and unpack. -->
-1. Зклонуйте цей репозиторій або [завантажте його як zip архів](https://github.com/MaxymVlasov/eco-data-visualizer/archive/master.zip) і розпакуйте.
+1. Зклонуйте цей репозиторій
+
+```bash
+git clone git@github.com:MaxymVlasov/eco-data-visualizer.git
+```
+
+або [завантажте його як zip архів](https://github.com/MaxymVlasov/eco-data-visualizer/archive/master.zip) і розпакуйте.
 
 <!-- 2. Choose SaveEcoBot station [on this map](https://www.saveecobot.com/en/maps) and click 'Details'   -->
 2. Виберіть станцію SaveEcoBot [на цій мапі](https://www.saveecobot.com/uk/maps) та натисніть "Детальна інформація про станцію"  

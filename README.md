@@ -4,7 +4,7 @@
 
 This software up and run nice dashboard with metrics from CSV file and calculate AQI for PM2.5 and PM10.
 
-Air Quality Index calculations based on [this document](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf)
+Air Quality Index calculations based on [this document](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf).
 
 ![How it looks like](docs/en/images/first-view.png)
 
@@ -41,7 +41,13 @@ More screenshots and usage examples [here](docs/en/screenshots.md).
 
 ### Quick start
 
-1. Clone this repo or [download it as zip](https://github.com/MaxymVlasov/eco-data-visualizer/archive/master.zip) and unpack.
+1. Clone this repo
+
+```bash
+git clone git@github.com:MaxymVlasov/eco-data-visualizer.git
+```
+
+or [download it as zip](https://github.com/MaxymVlasov/eco-data-visualizer/archive/master.zip) and unpack.
 
 2. Choose SaveEcoBot station [on this map](https://www.saveecobot.com/en/maps) and click 'Details'  
 ![map-details.png](docs/en/images/map-details.png)

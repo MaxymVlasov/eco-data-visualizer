@@ -2,9 +2,9 @@
 
 >**[Читати Українською :ukraine:](README-uk.md)**
 
-This software up and run nice dashboard with metrics from CSV file and calculate AQI for PM2.5 and PM10.
+This software sets up and runs nice dashboard with metrics from CSV file and calculate AQI for PM2.5 and PM10.
 
-Air Quality Index calculations based on [this document](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf).
+Air Quality Index calculations is based on [this document](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf).
 
 ![How it looks like](docs/en/images/first-view.png)
 
@@ -52,11 +52,11 @@ or [download it as zip](https://github.com/MaxymVlasov/eco-data-visualizer/archi
 2. Choose SaveEcoBot station [on this map](https://www.saveecobot.com/en/maps) and click 'Details'  
 ![map-details.png](docs/en/images/map-details.png)
 
-3. On bottom you'll see `Download raw data (CSV)`  
+3. On the bottom you'll see `Download raw data (CSV)`  
 ![download-csv.png](docs/en/images/download-csv.png)  
 click on the link and save CSV-file to `./data/original_data/` inside downloaded repo.
 
-4. Open terminal in the root of `eco-data-visualizer` and run:
+4. Open the terminal in the root of `eco-data-visualizer` and run:
 
 ```bash
 # Data preparation
@@ -69,7 +69,7 @@ docker build -t add_influx_data ./provisioning/influx
 docker run -v "$PWD"/data/influx/:/influx-data/ --rm --network=eco-data-visualizer_default add_influx_data
 ```
 <!-- markdownlint-disable no-inline-html -->
-><sup>Depending on your internet bandwidth, CPU, Storage I/O, CSV file size and number of processed files `First Init` may take different times.  
+><sup>Depending on your internet bandwidth, CPU, Storage I/O, CSV file size, and the number of processed files `First Init` may take different times.  
 For example, in laptop with `100Mbit/s` bandwidth, `Intel Core i7-8550U` (max clock speed `4Ghz`), SSD disk and:</sup>  
 <sup>  - 2 CSV files (together: 620MB) it takes `8m11s` (`6m09s` to transform data)</sup>  
 <sup>  - 1 CSV file (513MB) - `5m27s` (`3m47s` to transform data)</sup>  
@@ -82,17 +82,17 @@ For example, in laptop with `100Mbit/s` bandwidth, `Intel Core i7-8550U` (max cl
 
 #### Start
 
-For start visualization open terminal in the root of repo and run:
+To start visualization open terminal in the root of the repo and run:
 
 ```bash
 docker-compose up -d
 ```
 
-Then open [http://localhost/](http://localhost/) for see visualizations.
+Then open [http://localhost/](http://localhost/) to see visualizations.
 
 #### Stop
 
-For stop visualization open terminal in the root of repo and run:
+To stop visualization open terminal in the root of the repo and run:
 
 ```bash
 docker-compose stop
@@ -103,7 +103,7 @@ docker-compose stop
 #### Process new data
 
 1. Download CSV file from SaveEcoBot station
-2. Move it to `data/original_data` folder in this repo.
+2. Move it to `data/original_data` folder in the repo.
 3. Run:
 
 ```bash
@@ -116,7 +116,7 @@ docker run -v "$PWD"/data/:/app/data/ --rm data-transformer
 
 #### Add new data
 
-For add new data open terminal in the root of repo and run:
+To add new data, open terminal in the root of the repo and run:
 
 ```bash
 # Start services
@@ -128,7 +128,7 @@ docker run -v "$PWD"/data/influx/:/influx-data/ --rm --network=eco-data-visualiz
 
 #### Remove data
 
-For remove sensors data open terminal in the root of repo and run:
+To remove sensors data, open terminal in the root of the repo and run:
 
 ```bash
 docker-compose down
@@ -137,7 +137,7 @@ docker volume rm eco-data-visualizer_sensors-data
 
 ### Full cleanup
 
-For cleanup open terminal in the root of repo and run:
+To clean up, open terminal in the root of the repo and run:
 
 ```bash
 # Stop services
@@ -150,7 +150,7 @@ docker run -v "$PWD"/data/:/app/ --rm amancevice/pandas:1.0.3-alpine sh -c "rm -
 
 ## For contributors
 
-Use same instructions from [Quick start](#quick-start) section but in step 4 add `--build-arg ENV=dev` for `data-transformer-app`.
+Use same instructions as in [Quick start](#quick-start) section but in step 4 add `--build-arg ENV=dev` to `data-transformer-app`.
 
 ```bash
 docker build --build-arg ENV=dev -t data-transformer ./data-transformer-app
@@ -163,13 +163,13 @@ docker build --build-arg ENV=dev -t data-transformer ./data-transformer-app
   * [ ] Docs localization
 * [ ] In Grafana Create personal graphs for each sensor with own good-bad color limits and so on as for AQI
 * [ ] Grab exist metrics from 'phenomenon' colum, use `SENSORS` content only for user friendly names and localization
-* [ ] Add AQI support for all specified in [doc](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf)
+* [ ] Add AQI support for everything specified in [the doc](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf)
 * [ ] Optimize `data-transformer-app`
   * [ ] Parallel sensors operation execution
-  * [x] Use less Disk I/O operations
+  * [x] Use less disk I/O operations
 
 <!-- markdownlint-disable no-trailing-punctuation -->
-## Want help?
+## Want to help?
 <!-- markdownlint-enable no-trailing-punctuation -->
 
 You can:
@@ -180,8 +180,8 @@ You can:
 
 ## License and Copyrights
 
-This software licensed by [Apache License 2.0](LICENSE).
+This software is licensed by [Apache License 2.0](LICENSE).
 
-All data from SaveEcoBot licensed by [Creative Commons Attribution License 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode).
+All data from SaveEcoBot is licensed by [Creative Commons Attribution License 4.0 International](https://creativecommons.org/licenses/by/4.0/legalcode).
 
-Other data and sources can be licensed in different way.
+Other data and sources can be licensed in a different way.

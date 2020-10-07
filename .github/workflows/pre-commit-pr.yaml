@@ -2,6 +2,9 @@ name: pre-commit
 
 on:
   pull_request:
+    paths-ignore:
+      - '.github/workflows/**'
+
 
 jobs:
   pre-commit:
@@ -12,7 +15,7 @@ jobs:
       with:
         python-version: '3.8'
     - id: file_changes
-      uses: trilom/file-changes-action@v1.2.3
+      uses: trilom/file-changes-action@v1.2.4
       with:
         output: ' '
     - uses: pre-commit/action@v2.0.0

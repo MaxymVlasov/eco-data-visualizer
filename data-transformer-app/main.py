@@ -172,8 +172,8 @@ def transform_date_to_nanoseconds(date) -> int:
 #######################################################################
 
 
-@typechecked  # noqa: WPS210, WPS213, WPS231
-def main() -> None:  # pylint: disable=R0914
+@typechecked
+def main() -> None:  # pylint: disable=R0914 # noqa: WPS210, WPS213, WPS231
     """Logic."""
     files = find_csv_filenames(conf.PATH)
 

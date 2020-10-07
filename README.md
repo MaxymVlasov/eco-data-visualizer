@@ -27,7 +27,7 @@ More screenshots and usage examples [here](docs/en/screenshots.md).
   * [Full cleanup](#full-cleanup)
 * [For contributors](#for-contributors)
 * [Future plans](#future-plans)
-* [Want help?](#want-help)
+* [Want to help?](#want-to-help)
 * [License and Copyrights](#license-and-copyrights)
 
 ---

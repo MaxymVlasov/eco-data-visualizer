@@ -2,9 +2,9 @@
 
 >**[Читати Українською :ukraine:](README-uk.md)**
 
-This software sets up and runs nice dashboard with metrics from CSV file and calculate AQI for PM2.5 and PM10.
+This software sets up and runs a nice dashboard with metrics from the CSV file and calculate AQI for PM2.5 and PM10.
 
-Air Quality Index calculations is based on [this document](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf).
+Air Quality Index calculations are based on [this document](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf).
 
 ![How it looks like](docs/en/images/first-view.png)
 
@@ -166,7 +166,7 @@ docker build --build-arg ENV=dev -t data-transformer ./data-transformer-app
 * [ ] Add AQI support for everything specified in [the doc](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf)
 * [ ] Optimize `data-transformer-app`
   * [ ] Parallel sensors operation execution
-  * [x] Use less disk I/O operations
+  * [x] Use less Disk I/O operations
 
 <!-- markdownlint-disable no-trailing-punctuation -->
 ## Want to help?

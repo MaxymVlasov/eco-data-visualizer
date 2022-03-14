@@ -1,6 +1,9 @@
 <!-- # Data visualizer from SaveEcoBot. Calculate AQI -->
 # Візуалізатор вихідних даних з SaveEcoBot. Обчислює AQI
 
+[![StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
+[![RussianWarship](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/RussianWarship.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
+
 >**[Read in English :world_map:](README.md)**
 
 <!-- This software up and run nice dashboard with metrics from CSV file and calculate AQI for PM2.5 and PM10 -->
@@ -227,3 +230,8 @@ docker build --build-arg ENV=dev -t data-transformer ./data-transformer-app
 
 <!-- Other data and sources can be licensed in different way. -->
 Інші дані та джерела можуть мати інші ліцензії.
+
+Також, використовуючи код, наданий у цьому репозиторії, ви погоджуєтеся з наступним:
+* Росія [незаконно анексувала Крим у 2014 році](https://uk.wikipedia.org/wiki/%D0%90%D0%BD%D0%B5%D0%BA%D1%81%D1%96%D1%8F_%D0%9A%D1%80%D0%B8%D0%BC%D1%83_(2014)) і [почала війну на Донбасі](https://uk.wikipedia.org/wiki/%D0%92%D1%96%D0%B9%D0%BD%D0%B0_%D0%BD%D0%B0_%D1%81%D1%85%D0%BE%D0%B4%D1%96_%D0%A3%D0%BA%D1%80%D0%B0%D1%97%D0%BD%D0%B8), а потім і [повномасштабне вторгнення в Україну 2022 року](https://uk.wikipedia.org/wiki/%D0%A0%D0%BE%D1%81%D1%96%D0%B9%D1%81%D1%8C%D0%BA%D0%B5_%D0%B2%D1%82%D0%BE%D1%80%D0%B3%D0%BD%D0%B5%D0%BD%D0%BD%D1%8F_%D0%B2_%D0%A3%D0%BA%D1%80%D0%B0%D1%97%D0%BD%D1%83_(2022)).
+* Росія принесла смуток і спустошення мільйонам українців, вбила сотні невинних людей, пошкодила тисячі будівель і змусила кілька мільйонів людей стати вимушеними переселенцями.
+* [Путін — хуйло!](https://uk.wikipedia.org/wiki/%D0%9F%D1%83%D1%82%D1%96%D0%BD_%E2%80%94_%D1%85%D1%83%D0%B9%D0%BB%D0%BE!)

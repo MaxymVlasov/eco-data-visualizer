@@ -6,7 +6,7 @@
 
 This software sets up and runs a nice dashboard with metrics from the CSV file and calculate AQI for PM2.5 and PM10.
 
-Air Quality Index calculations are based on [this document](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf).
+Air Quality Index calculations are based on [this document](https://www.airnow.gov/sites/default/files/2020-05/aqi-technical-assistance-document-sept2018.pdf).
 
 ![How it looks like](docs/en/images/first-view.png)
 

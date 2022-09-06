@@ -9,8 +9,8 @@
 <!-- This software up and run nice dashboard with metrics from CSV file and calculate AQI for PM2.5 and PM10 -->
 Це програмне забезпечення підготує та запустить панель з усіма показниками з CSV-файлу а також обчислить і покаже AQI для PM2.5 та PM10.
 
-<!-- Air Quality Index calculations based on [this document](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf) -->
-Розрахунки Індексу Якості Повітря (Air Quality Index) базуються на основі [цього документа](https://www.airnow.gov/sites/default/files/2018-05/aqi-technical-assistance-document-may2016.pdf).
+<!-- Air Quality Index calculations based on [this document](https://www.airnow.gov/sites/default/files/2020-05/aqi-technical-assistance-document-sept2018.pdf) -->
+Розрахунки Індексу Якості Повітря (Air Quality Index) базуються на основі [цього документа](https://www.airnow.gov/sites/default/files/2020-05/aqi-technical-assistance-document-sept2018.pdf).
 
 ![Як це виглядає](docs/en/images/first-view.png)
 
